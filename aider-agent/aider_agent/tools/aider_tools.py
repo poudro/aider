@@ -80,7 +80,8 @@ class AiderPromptTool(Tool):
             # Sync back state to the main agent coder
             agent_coder.total_cost = editor_coder.total_cost
             agent_coder.aider_commit_hashes.update(editor_coder.aider_commit_hashes)
-            if agent_coder.repo and agent_coder.repo.is_dirty():
+
+            if agent_coder.auto_commits and agent_coder.repo and agent_coder.repo.is_dirty():
                 agent_coder.commands.cmd_commit(
                     f"Apply changes from agent prompt: {prompt[:50]}..."
                 )

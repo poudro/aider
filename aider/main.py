@@ -494,15 +494,17 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     default_config_files.reverse()
 
     parser = get_parser(default_config_files, git_root)
-
+    print(parser)
     args, unknown = parser.parse_known_args(argv)
-
+    print(args, unknown)
     # Load the .env file specified in the arguments
     loaded_dotenvs = load_dotenv_files(git_root, args.env_file, args.encoding)
 
     # Parse again to include any arguments that might have been defined in .env
     args = parser.parse_args(argv)
 
+    if not args.agent_model:
+        args.agent_model = args.model
     if not args.agent_planner_model:
         args.agent_planner_model = args.agent_model
     if not args.agent_executor_model:

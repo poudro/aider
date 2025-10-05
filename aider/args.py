@@ -709,9 +709,12 @@ def get_parser(default_config_files, git_root):
     agent_group.add_argument(
         "--agent-model",
         type=str,
-        default="gpt-4o",
+        default=None,
         metavar="MODEL",
-        help="Model to use for the agent. Used for both planner and executor unless overridden.",
+        help=(
+            "Model to use for the agent. Defaults to --model if not set. Used for both planner and"
+            " executor unless overridden."
+        ),
     )
     agent_group.add_argument(
         "--agent-planner-model",
