@@ -836,6 +836,14 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         args.agent_model,
         verbose=args.verbose,
     )
+    agent_planner_model = models.Model(
+        args.agent_planner_model,
+        verbose=args.verbose,
+    )
+    agent_executor_model = models.Model(
+        args.agent_executor_model,
+        verbose=args.verbose,
+    )
 
     # Check if deprecated remove_reasoning is set
     if main_model.remove_reasoning is not None:
@@ -983,6 +991,8 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         coder = Coder.create(
             main_model=main_model,
             agent_model=agent_model,
+            agent_planner_model=agent_planner_model,
+            agent_executor_model=agent_executor_model,
             edit_format=args.edit_format,
             io=io,
             repo=repo,

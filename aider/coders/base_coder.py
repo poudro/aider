@@ -121,6 +121,8 @@ class Coder:
     commit_language = None
     file_watcher = None
     agent_model = None
+    agent_planner_model = None
+    agent_executor_model = None
 
     @classmethod
     def create(
@@ -185,6 +187,8 @@ class Coder:
                 total_tokens_sent=from_coder.total_tokens_sent,
                 total_tokens_received=from_coder.total_tokens_received,
                 file_watcher=from_coder.file_watcher,
+                agent_planner_model=from_coder.agent_planner_model,
+                agent_executor_model=from_coder.agent_executor_model,
             )
             use_kwargs.update(update)  # override to complete the switch
             use_kwargs.update(kwargs)  # override passed kwargs
@@ -346,11 +350,15 @@ class Coder:
         auto_copy_context=False,
         auto_accept_architect=True,
         agent_model=None,
+        agent_planner_model=None,
+        agent_executor_model=None,
     ):
         # Fill in a dummy Analytics if needed, but it is never .enable()'d
         self.analytics = analytics if analytics is not None else Analytics()
 
         self.agent_model = agent_model or main_model
+        self.agent_planner_model = agent_planner_model or self.agent_model
+        self.agent_executor_model = agent_executor_model or self.agent_model
 
         self.event = self.analytics.event
         self.chat_language = chat_language
