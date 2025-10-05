@@ -17,3 +17,9 @@ aider/_version.py
 .gitattributes
 tmp.benchmarks/
 .docker_bash_history
+
+develop-eggs/
+eggs/
+.eggs/
+*.egg-info/
+*.egg

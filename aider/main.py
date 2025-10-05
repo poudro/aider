@@ -691,6 +691,18 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         else:
             read_only_fnames.append(str(path))
 
+    try:
+        aider_path = str(importlib_resources.files("aider"))
+        main_py = Path(aider_path) / "main.py"
+        if main_py.exists():
+            fnames.append(str(main_py.resolve()))
+        models_py = Path(aider_path) / "models.py"
+        if models_py.exists():
+            fnames.append(str(models_py.resolve()))
+        fnames = list(dict.fromkeys(fnames))
+    except Exception:
+        pass
+
     if len(all_files) > 1:
         good = True
         for fname in all_files:
