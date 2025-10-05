@@ -70,7 +70,7 @@ class TaskPlanner(BasePlanner):
 
         try:
             # We need a non-streaming response to get the full JSON plan.
-            _hash, response = self.coder.main_model.send_completion(messages, None, stream=False)
+            _hash, response = self.coder.agent_planner_model.send_completion(messages, None, stream=False)
             if not response.choices or not response.choices[0].message.content:
                 self.io.tool_error("Received an empty plan from the LLM.")
                 return None

@@ -41,7 +41,7 @@ from prompt_toolkit.enums import EditingMode
 
 from aider import __version__, models, urls, utils
 from aider.analytics import Analytics
-from aider.args import get_agent_parser, get_parser
+from aider.args import get_parser
 from aider.coders import Coder
 from aider.coders.base_coder import UnknownEditFormat
 from aider.commands import Commands, SwitchCoder
@@ -525,6 +525,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     if args.agent:
         try:
             from aider_agent.main import parse_agent_args
+            from aider_agent.args import get_agent_parser
 
             args, unknown = parse_agent_args(
                 git_root,
@@ -721,18 +722,6 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
             read_only_fnames.extend(str(f) for f in path.rglob("*") if f.is_file())
         else:
             read_only_fnames.append(str(path))
-
-    try:
-        aider_path = str(importlib_resources.files("aider"))
-        main_py = Path(aider_path) / "main.py"
-        if main_py.exists():
-            fnames.append(str(main_py.resolve()))
-        models_py = Path(aider_path) / "models.py"
-        if models_py.exists():
-            fnames.append(str(models_py.resolve()))
-        fnames = list(dict.fromkeys(fnames))
-    except Exception:
-        pass
 
     if len(all_files) > 1:
         good = True
