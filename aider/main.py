@@ -503,6 +503,11 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     # Parse again to include any arguments that might have been defined in .env
     args = parser.parse_args(argv)
 
+    if not args.agent_planner_model:
+        args.agent_planner_model = args.agent_model
+    if not args.agent_executor_model:
+        args.agent_executor_model = args.agent_model
+
     if args.shell_completions:
         # Ensure parser.prog is set for shtab, though it should be by default
         parser.prog = "aider"
