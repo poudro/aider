@@ -120,11 +120,13 @@ class Coder:
     chat_language = None
     commit_language = None
     file_watcher = None
+    agent_model = None
 
     @classmethod
     def create(
         self,
         main_model=None,
+        agent_model=None,
         edit_format=None,
         io=None,
         from_coder=None,
@@ -138,6 +140,9 @@ class Coder:
                 main_model = from_coder.main_model
             else:
                 main_model = models.Model(models.DEFAULT_MODEL_NAME)
+
+        if agent_model is None and from_coder:
+            agent_model = from_coder.agent_model
 
         if edit_format == "code":
             edit_format = None
@@ -186,6 +191,8 @@ class Coder:
 
             kwargs = use_kwargs
             from_coder.ok_to_warm_cache = False
+
+        kwargs["agent_model"] = agent_model
 
         for coder in coders.__all__:
             if hasattr(coder, "edit_format") and coder.edit_format == edit_format:
@@ -338,9 +345,12 @@ class Coder:
         file_watcher=None,
         auto_copy_context=False,
         auto_accept_architect=True,
+        agent_model=None,
     ):
         # Fill in a dummy Analytics if needed, but it is never .enable()'d
         self.analytics = analytics if analytics is not None else Analytics()
+
+        self.agent_model = agent_model or main_model
 
         self.event = self.analytics.event
         self.chat_language = chat_language

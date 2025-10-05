@@ -832,6 +832,11 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         verbose=args.verbose,
     )
 
+    agent_model = models.Model(
+        args.agent_model,
+        verbose=args.verbose,
+    )
+
     # Check if deprecated remove_reasoning is set
     if main_model.remove_reasoning is not None:
         io.tool_warning(
@@ -977,6 +982,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     try:
         coder = Coder.create(
             main_model=main_model,
+            agent_model=agent_model,
             edit_format=args.edit_format,
             io=io,
             repo=repo,
