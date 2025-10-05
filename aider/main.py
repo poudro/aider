@@ -774,7 +774,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     register_litellm_models(git_root, args.model_metadata_file, io, verbose=args.verbose)
 
     if args.list_models:
-        models.print_matching_models(io, args.list_models)
+        models.print_matching_models(io, args.list_models, agent_only=args.agent)
         analytics.event("exit", reason="Listed models")
         return 0
 

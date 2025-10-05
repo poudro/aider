@@ -698,6 +698,13 @@ def get_parser(default_config_files, git_root):
 
     agent_group = parser.add_argument_group("Agent Settings")
 
+    agent_group.add_argument(
+        "--agent",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Run in agent mode.",
+    )
+
     # Model configuration
     agent_group.add_argument(
         "--agent-model",

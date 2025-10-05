@@ -1162,7 +1162,7 @@ def sanity_check_model(io, model):
             f"Warning for {model}: Unknown context window size and costs, using sane defaults."
         )
 
-        possible_matches = fuzzy_match_models(model.name)
+        possible_matches = fuzzy_match_models(model.name, agent_only=False)
         if possible_matches:
             io.tool_output("Did you mean one of these?")
             for match in possible_matches:
@@ -1195,7 +1195,7 @@ def check_for_dependencies(io, model_name):
         )
 
 
-def fuzzy_match_models(name):
+def fuzzy_match_models(name, agent_only=False):
     name = name.lower()
 
     chat_models = set()
@@ -1206,6 +1206,16 @@ def fuzzy_match_models(name):
         model = orig_model.lower()
         if attrs.get("mode") != "chat":
             continue
+
+        if agent_only:
+            model_name_lower = orig_model.lower()
+            model_basename_lower = model_name_lower.split("/")[-1]
+            is_agent = (model_basename_lower in {m.lower() for m in OPENAI_MODELS}) or (
+                "claude-3" in model_name_lower
+            )
+            if not is_agent:
+                continue
+
         provider = attrs.get("litellm_provider", "").lower()
         if not provider:
             continue
@@ -1240,8 +1250,8 @@ def fuzzy_match_models(name):
     return sorted(set(matching_models))
 
 
-def print_matching_models(io, search):
-    matches = fuzzy_match_models(search)
+def print_matching_models(io, search, agent_only=False):
+    matches = fuzzy_match_models(search, agent_only=agent_only)
     if matches:
         io.tool_output(f'Models which match "{search}":')
         for model in matches:
