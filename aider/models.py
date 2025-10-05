@@ -329,6 +329,13 @@ class Model(ModelSettings):
 
         self.info = self.get_model_info(model)
 
+        # Agent capabilities
+        model_name_lower = self.name.lower()
+        model_basename_lower = model_name_lower.split("/")[-1]
+        self.is_agent = (model_basename_lower in {m.lower() for m in OPENAI_MODELS}) or (
+            "claude-3" in model_name_lower
+        )
+
         # Are all needed keys/params available?
         res = self.validate_environment()
         self.missing_keys = res.get("missing_keys")
