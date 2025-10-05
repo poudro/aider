@@ -26,6 +26,20 @@ class AgentCoder(Coder):
         # Initialize tools
         AiderTools.set_coder(self)
 
+    def get_announcements(self):
+        lines = super().get_announcements()
+        if (
+            self.agent_planner_model is self.main_model
+            and self.agent_executor_model is self.main_model
+        ):
+            pass
+        elif self.agent_planner_model is self.agent_executor_model:
+            lines.append(f"Agent model: {self.agent_planner_model.name}")
+        else:
+            lines.append(f"Agent planner model: {self.agent_planner_model.name}")
+            lines.append(f"Agent executor model: {self.agent_executor_model.name}")
+        return lines
+
     def run_one(self, user_message, preproc):
         self.init_before_message()
 

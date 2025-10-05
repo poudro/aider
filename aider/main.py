@@ -19,8 +19,29 @@ from dotenv import load_dotenv
 from prompt_toolkit.enums import EditingMode
 
 from aider import __version__, models, urls, utils
+import json
+import os
+import re
+import sys
+import threading
+import traceback
+import webbrowser
+from dataclasses import fields
+from pathlib import Path
+
+try:
+    import git
+except ImportError:
+    git = None
+
+import importlib_resources
+import shtab
+from dotenv import load_dotenv
+from prompt_toolkit.enums import EditingMode
+
+from aider import __version__, models, urls, utils
 from aider.analytics import Analytics
-from aider.args import get_parser
+from aider.args import get_agent_parser, get_parser
 from aider.coders import Coder
 from aider.coders.base_coder import UnknownEditFormat
 from aider.commands import Commands, SwitchCoder
@@ -494,21 +515,29 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     default_config_files.reverse()
 
     parser = get_parser(default_config_files, git_root)
-    print(parser)
     args, unknown = parser.parse_known_args(argv)
-    print(args, unknown)
     # Load the .env file specified in the arguments
     loaded_dotenvs = load_dotenv_files(git_root, args.env_file, args.encoding)
 
     # Parse again to include any arguments that might have been defined in .env
-    args = parser.parse_args(argv)
+    args, unknown = parser.parse_known_args(argv)
 
-    if not args.agent_model:
-        args.agent_model = args.model
-    if not args.agent_planner_model:
-        args.agent_planner_model = args.agent_model
-    if not args.agent_executor_model:
-        args.agent_executor_model = args.agent_model
+    if args.agent:
+        try:
+            from aider_agent.main import parse_agent_args
+
+            args, unknown = parse_agent_args(
+                git_root,
+                args,
+                unknown,
+                generate_search_path_list=generate_search_path_list,
+                get_agent_parser=get_agent_parser,
+            )
+        except ImportError:
+            pass
+
+    if unknown:
+        parser.error("unrecognized arguments: %s" % " ".join(unknown))
 
     if args.shell_completions:
         # Ensure parser.prog is set for shtab, though it should be by default
@@ -846,18 +875,16 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         verbose=args.verbose,
     )
 
-    agent_model = models.Model(
-        args.agent_model,
-        verbose=args.verbose,
-    )
-    agent_planner_model = models.Model(
-        args.agent_planner_model,
-        verbose=args.verbose,
-    )
-    agent_executor_model = models.Model(
-        args.agent_executor_model,
-        verbose=args.verbose,
-    )
+    agent_model = None
+    agent_planner_model = None
+    agent_executor_model = None
+    if args.agent:
+        try:
+            from aider_agent.main import create_agent_models
+
+            agent_model, agent_planner_model, agent_executor_model = create_agent_models(args)
+        except ImportError:
+            pass  # aider-agent not installed
 
     # Check if deprecated remove_reasoning is set
     if main_model.remove_reasoning is not None:
