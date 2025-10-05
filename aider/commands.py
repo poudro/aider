@@ -158,6 +158,10 @@ class Commands:
                 ("ask", "Ask questions about your code without making any changes."),
                 ("code", "Ask for changes to your code (using the best edit format)."),
                 (
+                    "agent",
+                    "Delegate tasks to an AI agent that can plan and execute complex changes.",
+                ),
+                (
                     "architect",
                     (
                         "Work with an architect model to design code changes, and an editor to make"
@@ -1163,6 +1167,9 @@ class Commands:
     def completions_code(self):
         raise CommandCompletionException()
 
+    def completions_agent(self):
+        raise CommandCompletionException()
+
     def completions_architect(self):
         raise CommandCompletionException()
 
@@ -1176,6 +1183,10 @@ class Commands:
     def cmd_code(self, args):
         """Ask for changes to your code. If no prompt provided, switches to code mode."""  # noqa
         return self._generic_chat_command(args, self.coder.main_model.edit_format)
+
+    def cmd_agent(self, args):
+        """Delegate tasks to an AI agent that can plan and execute complex changes. If no prompt provided, switches to agent mode."""  # noqa
+        return self._generic_chat_command(args, "agent")
 
     def cmd_architect(self, args):
         """Enter architect/editor mode using 2 different models. If no prompt provided, switches to architect/editor mode."""  # noqa

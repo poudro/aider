@@ -74,6 +74,13 @@ Use aider from within your favorite IDE or editor. Ask for changes by adding com
 
 <br>
 
+### [Agent mode](https://aider.chat/docs/agent.html)
+
+<a href="https://aider.chat/docs/agent.html"><img src="https://aider.chat/assets/icons/robot-outline.svg" width="32" height="32" align="left" valign="middle" style="margin-right:10px"></a>
+Delegate complex tasks to an AI agent that can plan and execute changes across your codebase.
+
+<br>
+
 ### [Images & web pages](https://aider.chat/docs/usage/images-urls.html)
 
 <a href="https://aider.chat/docs/usage/images-urls.html"><img src="https://aider.chat/assets/icons/image-multiple.svg" width="32" height="32" align="left" valign="middle" style="margin-right:10px"></a>

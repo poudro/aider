@@ -121,6 +121,18 @@ class Scraper:
 
         return content
 
+    def fetch_raw(self, url):
+        """
+        Fetch the raw content of a url.
+
+        `url` - the URL to fetch.
+        """
+        if self.playwright_available:
+            content, _mime_type = self.scrape_with_playwright(url)
+        else:
+            content, _mime_type = self.scrape_with_httpx(url)
+        return content
+
     def looks_like_html(self, content):
         """
         Check if the content looks like HTML.
